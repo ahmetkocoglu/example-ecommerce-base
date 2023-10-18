@@ -1,8 +1,10 @@
 export interface AddressModel {
     id: number,
-    AddressLine: string,
-    District: string,
-    City: string,
-    Country: string,
-    PostCode: string,
+    userId: number,
+    type: 'is' | 'ev',
+    addressLine: string,
+    district: string,
+    city: string,
+    country: string,
+    postCode: string,
 }
