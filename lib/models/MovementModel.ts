@@ -1,5 +1,5 @@
 export interface MovementModel {
-    id: number,
+    id?: number,
     pay: true | false,
     userId: number,
     productId: number,

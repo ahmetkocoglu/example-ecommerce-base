@@ -1,15 +1,15 @@
 import * as express from "express";
 import * as bodyParser from "body-parser";
-import { Routes } from "./routes/userRoutes";
+import { Routes } from "./routes/Routes";
 
 class App {
     public app: express.Application;
-    public routePrv: Routes = new Routes();
+    public routes: Routes = new Routes();
 
     constructor() {
         this.app = express();
         this.config();
-        this.routePrv.routes(this.app);
+        this.routes.routes(this.app);
     }
 
     private config(): void{
