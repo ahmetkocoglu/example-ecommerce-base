@@ -5,6 +5,7 @@ export interface ProductModel {
     tag: string,
     keyword: string,
     description: string,
-    price: number
+    price: number | 0,
+    discountPrice: number | 0,
 }
 

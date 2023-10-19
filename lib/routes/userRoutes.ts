@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { LoginModel } from "models/LoginModel";
-import { users } from "../mocDb/users";
+import { users } from "../mocData/users";
 import { UserModel } from "models/UserModel";
 
 export class Routes {
