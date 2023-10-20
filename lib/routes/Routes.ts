@@ -61,6 +61,8 @@ export class Routes {
                         return k.id === productId
                     })
 
+                product.quantity -= quantity
+
                 const newBasket: MovementModel = {
                     id: baskets.length + 1,
                     pay: false,
@@ -80,32 +82,46 @@ export class Routes {
         app.route('/basket/:id?')
             .delete((req: Request, res: Response) => {
                 const movementId: number = Number(req.params.id);
-                
+
                 const deleteBaskets = baskets.map((k: MovementModel) => {
-                    if(movementId){
-                        if(movementId === k.id) k.isDelete = true
+                    if (movementId) {
+                        if (movementId === k.id) k.isDelete = true
                     } else {
                         k.isDelete = true
                     }
-                    return k 
+                    return k
                 })
 
                 res.status(200).send(deleteBaskets)
             })
         app.route('/change-basket/:movementId/:quantity')
-        .get((req:Request, res:Response) => {
-            const movementId: number = Number(req.params.movementId);
-            const quantity: number = Number(req.params.quantity);
+            .get((req: Request, res: Response) => {
+                const movementId: number = Number(req.params.movementId);
+                const quantity: number = Number(req.params.quantity);
 
-            const changeBaskets = baskets.map((k: MovementModel) => {
-                if(movementId === k.id) {
-                    k.quantity = quantity
-                    k.amount = k.price * quantity
+                const movement = baskets.find((k: MovementModel) => k.id === movementId)
+
+                if (movement) {
+                    const product = products
+                        .find((z: ProductModel) => z.id === movement.productId);
+                    product.quantity = (movement.quantity + product.quantity) - quantity
+
+                    if(product.quantity >= 0){
+                        const changeBaskets = baskets.map((k: MovementModel) => {
+                            if (movementId === k.id) {
+                                k.quantity = quantity
+                                k.amount = k.price * quantity
+                            }
+                            return k
+                        })
+                        res.status(200).send(changeBaskets)
+                    } else {
+                       res.status(400).send('stok sınırını açtınız. yeni stok giriniz.') 
+                    }
+                } else {
+                    res.status(404).send('geçerli hareket bulunamadı')
                 }
-                return k
             })
-            res.status(200).send(changeBaskets)
-        })
         app.route('/payment')
             .get((req: Request, res: Response) => {
                 const payment: Array<MovementModel> = baskets

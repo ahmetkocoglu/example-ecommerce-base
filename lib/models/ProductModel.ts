@@ -7,5 +7,6 @@ export interface ProductModel {
     description: string,
     price: number | 0,
     discountPrice: number | 0,
+    quantity: number | 1
 }
 
