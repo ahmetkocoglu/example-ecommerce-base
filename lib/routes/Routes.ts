@@ -104,9 +104,10 @@ export class Routes {
                 if (movement) {
                     const product = products
                         .find((z: ProductModel) => z.id === movement.productId);
-                    product.quantity = (movement.quantity + product.quantity) - quantity
+                    const newQuantity: number = (movement.quantity + product.quantity) - quantity
 
-                    if(product.quantity >= 0){
+                    if (newQuantity >= 0) {
+                        product.quantity = newQuantity
                         const changeBaskets = baskets.map((k: MovementModel) => {
                             if (movementId === k.id) {
                                 k.quantity = quantity
@@ -116,7 +117,7 @@ export class Routes {
                         })
                         res.status(200).send(changeBaskets)
                     } else {
-                       res.status(400).send('stok sınırını açtınız. yeni stok giriniz.') 
+                        res.status(400).send('stok sınırını açtınız. yeni stok giriniz.')
                     }
                 } else {
                     res.status(404).send('geçerli hareket bulunamadı')
