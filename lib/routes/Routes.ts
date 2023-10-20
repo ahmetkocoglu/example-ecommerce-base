@@ -92,7 +92,20 @@ export class Routes {
 
                 res.status(200).send(deleteBaskets)
             })
-            
+        app.route('/change-basket/:movementId/:quantity')
+        .get((req:Request, res:Response) => {
+            const movementId: number = Number(req.params.movementId);
+            const quantity: number = Number(req.params.quantity);
+
+            const changeBaskets = baskets.map((k: MovementModel) => {
+                if(movementId === k.id) {
+                    k.quantity = quantity
+                    k.amount = k.price * quantity
+                }
+                return k
+            })
+            res.status(200).send(changeBaskets)
+        })
         app.route('/payment')
             .get((req: Request, res: Response) => {
                 const payment: Array<MovementModel> = baskets
