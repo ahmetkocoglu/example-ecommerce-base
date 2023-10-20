@@ -92,6 +92,7 @@ export class Routes {
 
                 res.status(200).send(deleteBaskets)
             })
+            
         app.route('/payment')
             .get((req: Request, res: Response) => {
                 const payment: Array<MovementModel> = baskets
