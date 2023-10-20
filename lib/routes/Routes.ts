@@ -6,6 +6,8 @@ import { products } from "../mocData/products";
 import { ProductModel } from "models/ProductModel";
 import { baskets } from "../mocData/basket";
 import { MovementModel } from "models/MovementModel";
+import multer = require('multer');
+const upload = multer({ dest: 'file/' });
 
 export class Routes {
     public routes(app): void {
@@ -48,7 +50,7 @@ export class Routes {
             })
         app.route('/basket')
             .get((req: Request, res: Response) => {
-                res.status(200).send(baskets)
+                res.status(200).send(baskets.filter((k: MovementModel) => k.isDelete === false))
             })
         app.route('/add-basket/:id/:quantity')
             .get((req: Request, res: Response) => {
@@ -67,21 +69,43 @@ export class Routes {
                     quantity: quantity,
                     price: product.discountPrice,
                     amount: quantity * product.discountPrice,
-                    movementDate: "2023-10-18"
+                    movementDate: "2023-10-18",
+                    isDelete: false
                 }
 
                 baskets.push(newBasket)
 
                 res.status(200).send(baskets)
             })
+        app.route('/basket/:id?')
+            .delete((req: Request, res: Response) => {
+                const movementId: number = Number(req.params.id);
+                
+                const deleteBaskets = baskets.map((k: MovementModel) => {
+                    if(movementId){
+                        if(movementId === k.id) k.isDelete = true
+                    } else {
+                        k.isDelete = true
+                    }
+                    return k 
+                })
+
+                res.status(200).send(deleteBaskets)
+            })
         app.route('/payment')
             .get((req: Request, res: Response) => {
-                const payment:Array<MovementModel> = baskets
-                .map((k: MovementModel) => {
-                    k.pay = true
-                    return k
-                })
+                const payment: Array<MovementModel> = baskets
+                    .map((k: MovementModel) => {
+                        k.pay = true
+                        return k
+                    })
                 res.status(200).send(payment)
+            })
+        app.route('/file-upload', upload.single('file'))
+            .post((req: Request, res: Response) => {
+                console.log(req);
+
+                res.status(200).send('file-upload')
             })
     }
 }
