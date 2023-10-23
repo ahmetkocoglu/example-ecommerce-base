@@ -32,7 +32,7 @@ export class Routes {
 
                 res.status(200).send({
                     message: "home",
-                    user
+                    user: user
                 })
             })
         app.route('/products')
